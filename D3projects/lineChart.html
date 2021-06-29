@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta  name="description" content="Drawing w/ D3" />
+        <meta charset="utf-8">
+        <title>Drawing w/ D3</title>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+    </head>
+    <body>
+        <script>
+            var h = 100;
+            var w = 200;
+            monthlySales = [
+                {"month":10, "sales": 100},
+                {"month":20, "sales": 130},
+                {"month":30, "sales": 250},
+                {"month":40, "sales": 300},
+                {"month":50, "sales": 265},
+                {"month":60, "sales": 225},
+                {"month":70, "sales": 180},
+                {"month":80, "sales": 120},
+                {"month":90, "sales": 145},
+                {"month":100, "sales": 130}
+            ];
+
+            var lineFun = d3.svg.line()
+                .x(function(d) { return d.month*3; }) //pass in the data for month
+                .y(function(d) { return h-d.sales; }) //pass in the data for sales // h-d is to flip the Y value to make the line the right way
+                .interpolate("linear"); //define what type of line
+
+            var svg = d3.select("body").append("svg").attr({width:w, height:h});
+
+            var viz = svg.append("path") // special type of svg object that allows us to draw data
+                .attr({
+                    d: lineFun(monthlySales),
+                    "stroke": "purple", //coloring the line
+                    "stroke-width": 2, //width of the line
+                    "fill": "none" 
+                });
+
+            // ADD LABELS
+            var lables = svg.selectAll("text")
+                .data(monthlySales)
+                .enter()
+                .append("text")
+                .text(function(d){ return d.sales; })
+                .attr({
+                    x: function(d){return d.month*3-25;},
+                    y: function(d) { return h-d.sales;},
+                    "font-size": "12px",// size styling
+                    "font-family": "sans-serif",
+                    "fill": "#666666",
+                    "text-anchor": "start",// starts of the labeling
+                    "dy": ".35em",//line height
+                    "font-weight": function(d, i) { //function to highlight line at different end points
+                        if (i===0 || i==(monthlySales.length-1)) {
+                            return "bold";
+                        }   else {
+                            return "normal";
+                        }
+                    }
+                });
+        </script>
+    </body>
+</html
